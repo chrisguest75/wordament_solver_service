@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  wordament:
+    build: ./wordament
+    environment:
+      PORT: 8000
+    ports:
+      - 8000:8000
+

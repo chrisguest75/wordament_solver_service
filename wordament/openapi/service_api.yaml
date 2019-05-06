@@ -1,0 +1,82 @@
+swagger: "2.0"
+info:
+  description: A simple OpenAPIV2 Demonstration
+  version: "1.0.0"
+  title: OpenAPI REST 
+
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+#schemes: [http, https]
+
+basePath: "/api"
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      operationId: health.health
+      summary: Health Check
+      responses:
+        '200':
+          description: Status message for current health
+
+  /wordament:
+    get:
+      tags: [Wordament]
+      operationId: wordament.read
+      summary: "Get the words found"
+      description: "Get all the words found"
+      responses:
+        '200':
+          description: "Successful read numbers operation"
+          schema:
+            type: "array"
+            items:
+              properties:
+                number:
+                  type: "string"
+
+
+  /helloworld:
+    get:
+      tags: [Numbers]
+      operationId: helloworld.read
+      summary: "The stored numbers"
+      description: "Get all the stored numbers"
+      responses:
+        '200':
+          description: "Successful read numbers operation"
+          schema:
+            type: "array"
+            items:
+              properties:
+                number:
+                  type: "integer"
+
+    # post:
+    #   tags: [Numbers]
+    #   operationId: numbers_store.add
+    #   summary: "Add a number"
+    #   description: "Store a number"
+    #   consumes:
+    #     - application/json
+    #   parameters:
+    #     - in: body
+    #       name: numbers
+    #       description: The number to add
+    #       schema:
+    #         type: object
+    #         required:
+    #           - number
+    #         properties:
+    #           number:
+    #             type: integer
+    #   responses:
+    #     201:
+    #       description: Created
+
+
+
+        
