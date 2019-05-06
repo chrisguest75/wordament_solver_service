@@ -1,6 +1,7 @@
 substitutions:
   _TWO_PART_VERSION: "0.1" 
   _GITHUB_USERNAME: "chrisguest75" 
+  _CONTAINER_SUBFOLDER: "wordament" 
 
 steps:
 # Show some debug info - current state of folder.
@@ -58,8 +59,8 @@ steps:
   args:
   - 'build'
   - '--tag=gcr.io/$PROJECT_ID/$REPO_NAME:latest'
-  - '--file=./hellonode/Dockerfile'
-  - './hellonode'
+  - '--file=./${_CONTAINER_SUBFOLDER}/Dockerfile'
+  - './${_CONTAINER_SUBFOLDER}'
 
   # TODO: This has an issue that it might have had another commit since build trigger.  
   #- './$REPO_NAME/hellonode'
