@@ -41,10 +41,9 @@ paths:
       parameters:
         - $ref: '#/parameters/dictionary_id'        
       responses:
-        200:
-          description: '#/parameters/dictionary_id found'
-          schema:
-            #- $ref: '#/definitions/dictionary'        
+        '200':
+          description: 'Dictionary found'
+          schema: 
             properties:
               id:
                 type: string
@@ -54,8 +53,14 @@ paths:
                 description: Number of words
               max_word_length:
                 type: integer
-                description: Longest word length            
-        404:
+                description: Longest word length
+
+          # content:
+          #   application/json:
+          #     schema:
+          #       $ref: '#/components/schemas/Dictionary'
+
+        '404':
           description: '#/parameters/dictionary_id does not exist'
 
     post:
@@ -171,15 +176,20 @@ parameters:
 #     type: string
 #     pattern: "^[a-zA-Z0-9-]*$"
 
-definitions:
-  dictionary:
-    properties:
-      id:
-        type: string
-        description: Unique identifier
-      number_of_words:
-        type: integer
-        description: Number of words
-      max_word_length:
-        type: integer
-        description: Longest word length
+# components:
+#   schemas:
+#     Dictionary:
+#       type: object
+#       properties:
+#         id:
+#           type: string
+#           description: Unique identifier
+#         number_of_words:
+#           type: integer
+#           description: Number of words
+#         max_word_length:
+#           type: integer
+#           description: Longest word length
+
+    #definitions:
+    #  dictionaryParam:

@@ -32,6 +32,7 @@ def get(dictionary_id):
         t = d[dictionary_id]
 
         document = {
+            "id": dictionary_id,
             "num_of_words": t.number_of_words(),
             "longest_word_length": t.longest_word_length()
         }
