@@ -1,8 +1,8 @@
 swagger: "2.0"
 info:
-  description: A simple OpenAPIV2 Demonstration
+  description: A Restful interface for the wordament_solver
   version: "1.0.0"
-  title: OpenAPI REST 
+  title: Wordament solver
 
 consumes:
   - "application/json"
@@ -15,18 +15,133 @@ basePath: "/api"
 paths:
   /health:
     get:
-      tags: [Health]
+      tags: [health]
       operationId: health.health
       summary: Health Check
       responses:
         '200':
           description: Status message for current health
 
-  /wordament:
+  /ready:
+    get:
+      tags: [readiness]
+      operationId: dictionary.loaded
+      summary: Readiness Check
+      responses:
+        '200':
+          description: Status message for if default dictionary is loaded
+
+  /dictionary/{dictionary_id}:
+    get:
+      operationId: dictionary.get
+      summary: "Get a named dictionary"
+      description: "Get a named dictionary."
+      consumes:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/dictionary_id'        
+      responses:
+        200:
+          description: '#/parameters/dictionary_id found'
+          schema:
+            #- $ref: '#/definitions/dictionary'        
+            properties:
+              id:
+                type: string
+                description: Unique identifier
+              number_of_words:
+                type: integer
+                description: Number of words
+              max_word_length:
+                type: integer
+                description: Longest word length            
+        404:
+          description: '#/parameters/dictionary_id does not exist'
+
+    post:
+      operationId: dictionary.create
+      summary: "Create a named dictionary"
+      description: "Create a named dictionary.  The payload can contain an initial set of words for the dictionary"
+      consumes:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/dictionary_id'        
+        - in: body
+          name: words
+          description: The words that will be passed into the dictionary.
+          schema:
+            type: "array"
+            items:
+              properties:
+                number:
+                  type: "string"
+      responses:
+        '201':
+          description: 'Created #/parameters/dictionary_id'
+        '409':
+          description: '#/parameters/dictionary_id already exists'
+
+    put:
+      operationId: dictionary.add_words
+      summary: "Adds words to an existing dictionary"
+      description: "Adds words to an existing dictionary"
+      consumes:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/dictionary_id'        
+        - in: body
+          name: words
+          description: The words that will be passed into the dictionary.
+          schema:
+            type: "array"
+            items:
+              properties:
+                number:
+                  type: "string"
+      responses:
+        '200':
+          description: 'Successfully added words to dictionary'
+        '404':
+          description: '#/parameters/dictionary_id not found'
+
+  # /dictionary/{dictionary_id}/{word}:
+  #   get:
+  #     operationId: dictionary.get_word
+  #     summary: "Check if word exists in dictionary or not"
+  #     description: "Check if word exists in dictionary or not"
+  #     consumes:
+  #       - application/json
+  #     parameters:
+  #       - $ref: '#/parameters/dictionary_id'  
+  #       - $ref: '#/parameters/word'                 
+  #     responses:
+  #       200:
+  #         description: 'Word found'
+  #       404:
+  #         description: 'Word does not exist'
+
+  #   post:
+  #     operationId: dictionary.add_word
+  #     summary: "Add word to dictionary"
+  #     description: "Add word to dictionary"
+  #     consumes:
+  #       - application/json
+  #     parameters:
+  #       - $ref: '#/parameters/dictionary_id'    
+  #       - $ref: '#/parameters/word'               
+  #     responses:
+  #       '201':
+  #         description: 'Word added'
+  #       '404':
+  #         description: 'Dictionary not found'
+
+
+        
+  /puzzle:
     get:
       tags: [Wordament]
-      operationId: wordament.read
-      summary: "Get the words found"
+      operationId: puzzle.read
+      summary: "Get the words found in the puzzle"
       description: "Get all the words found"
       responses:
         '200':
@@ -39,44 +154,32 @@ paths:
                   type: "string"
 
 
-  /helloworld:
-    get:
-      tags: [Numbers]
-      operationId: helloworld.read
-      summary: "The stored numbers"
-      description: "Get all the stored numbers"
-      responses:
-        '200':
-          description: "Successful read numbers operation"
-          schema:
-            type: "array"
-            items:
-              properties:
-                number:
-                  type: "integer"
+parameters:
+  dictionary_id:
+    name: dictionary_id
+    description: Dictionary unique id
+    in: path
+    type: string
+    required: true
+    pattern: "^[a-zA-Z0-9-]*$"
 
-    # post:
-    #   tags: [Numbers]
-    #   operationId: numbers_store.add
-    #   summary: "Add a number"
-    #   description: "Store a number"
-    #   consumes:
-    #     - application/json
-    #   parameters:
-    #     - in: body
-    #       name: numbers
-    #       description: The number to add
-    #       schema:
-    #         type: object
-    #         required:
-    #           - number
-    #         properties:
-    #           number:
-    #             type: integer
-    #   responses:
-    #     201:
-    #       description: Created
+# parameters:
+#   word:
+#     name: word
+#     description: "A word to be added to the dictionary"
+#     in: path
+#     type: string
+#     pattern: "^[a-zA-Z0-9-]*$"
 
-
-
-        
+definitions:
+  dictionary:
+    properties:
+      id:
+        type: string
+        description: Unique identifier
+      number_of_words:
+        type: integer
+        description: Number of words
+      max_word_length:
+        type: integer
+        description: Longest word length

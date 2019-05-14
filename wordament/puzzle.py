@@ -1,7 +1,7 @@
 
 from py_wordament_helper.wordament_helper import wordament_helper
 from py_wordament_helper.dictionary_trie import dictionary_trie
-
+from state_manager import state_manager_factory
 
 def read():
     grid = 'GLNTSRAWRPHSEOPS'
