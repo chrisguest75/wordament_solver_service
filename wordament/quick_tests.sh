@@ -1,6 +1,7 @@
-#!/usr/bin/env bash -x
+#!/usr/bin/env bash
+##!/usr/bin/env bash -x
 
-#export VERBOSE=-v
+export VERBOSE=-v
 curl -X POST "http://localhost:8000/api/dictionary/test" -d '["one", "two", "three"]' --header "content-type:application/json" ${VERBOSE}
 
 curl -X GET "http://localhost:8000/api/dictionary/test" --header "content-type:application/json" ${VERBOSE}
@@ -16,3 +17,6 @@ quoted="\"$NUMBER\""
 curl -X PUT "http://localhost:8000/api/dictionary/test" -d "[$quoted]" --header "content-type:application/json" ${VERBOSE}
 
 curl -X GET "http://localhost:8000/api/dictionary/test" --header "content-type:application/json" ${VERBOSE}
+
+curl -X GET "http://localhost:8000/api/dictionary/test/one" --header "content-type:application/json" ${VERBOSE}
+curl -X GET "http://localhost:8000/api/dictionary/test/four" --header "content-type:application/json" ${VERBOSE}

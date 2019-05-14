@@ -109,21 +109,31 @@ paths:
         '404':
           description: '#/parameters/dictionary_id not found'
 
-  # /dictionary/{dictionary_id}/{word}:
-  #   get:
-  #     operationId: dictionary.get_word
-  #     summary: "Check if word exists in dictionary or not"
-  #     description: "Check if word exists in dictionary or not"
-  #     consumes:
-  #       - application/json
-  #     parameters:
-  #       - $ref: '#/parameters/dictionary_id'  
-  #       - $ref: '#/parameters/word'                 
-  #     responses:
-  #       200:
-  #         description: 'Word found'
-  #       404:
-  #         description: 'Word does not exist'
+  /dictionary/{dictionary_id}/{word}:
+    get:
+      operationId: dictionary.get_word
+      summary: "Check if word exists in dictionary or not"
+      description: "Check if word exists in dictionary or not"
+      parameters:
+        #- $ref: '#/parameters/dictionary_id'        
+        - name: dictionary_id
+          description: Dictionary unique id
+          in: path
+          type: string
+          required: true
+          pattern: "^[a-zA-Z0-9-]*$"  
+        - name: word
+          description: Word to test in dictionary
+          in: path
+          type: string
+          required: true
+          pattern: "^[a-zA-Z0-9-]*$"                
+
+      responses:
+        200:
+          description: 'Word found'
+        404:
+          description: 'Word does not exist'
 
   #   post:
   #     operationId: dictionary.add_word

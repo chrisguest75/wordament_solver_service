@@ -17,8 +17,8 @@ def add_words(dictionary_id, words):
     if not sm.exists("dictionaries"):
         return NoContent, 404  
     else:
-        d = sm.get("dictionaries")
-        trie = d[dictionary_id]
+        dictionaries = sm.get("dictionaries")
+        trie = dictionaries[dictionary_id]
 
         trie.insert_words(words)
         return NoContent, 201  
@@ -28,16 +28,26 @@ def get(dictionary_id):
     if not sm.exists("dictionaries"):
         return NoContent, 404  
     else:
-        d = sm.get("dictionaries")
-        t = d[dictionary_id]
+        dictionaries = sm.get("dictionaries")
+        trie = dictionaries[dictionary_id]
 
         document = {
             "id": dictionary_id,
-            "num_of_words": t.number_of_words(),
-            "longest_word_length": t.longest_word_length()
+            "num_of_words": trie.number_of_words(),
+            "longest_word_length": trie.longest_word_length()
         }
 
         return document, 200
+
+def get_word(dictionary_id, word):
+    sm = state_manager_factory.create()
+    if not sm.exists("dictionaries"):
+        return NoContent, 404  
+    else:
+        dictionaries = sm.get("dictionaries")
+        trie = dictionaries[dictionary_id]
+         
+    return NoContent, 200 if trie.is_word(word) else 404
 
 def loaded():
     return {'msg': 'ok'}, 200
