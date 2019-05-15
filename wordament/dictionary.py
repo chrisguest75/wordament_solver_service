@@ -49,6 +49,20 @@ def get_word(dictionary_id, word):
          
     return NoContent, 200 if trie.is_word(word) else 404
 
+def add_word(dictionary_id, word):
+    sm = state_manager_factory.create()
+    if not sm.exists("dictionaries"):
+        return NoContent, 404  
+    else:
+        dictionaries = sm.get("dictionaries")
+        trie = dictionaries[dictionary_id]
+        if trie.is_word(word):
+            return NoContent, 409
+        else:
+            trie.insert_words([word])  
+    
+    return NoContent, 201
+
 def loaded():
     return {'msg': 'ok'}, 200
 

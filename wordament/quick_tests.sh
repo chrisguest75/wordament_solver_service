@@ -20,3 +20,6 @@ curl -X GET "http://localhost:8000/api/dictionary/test" --header "content-type:a
 
 curl -X GET "http://localhost:8000/api/dictionary/test/one" --header "content-type:application/json" ${VERBOSE}
 curl -X GET "http://localhost:8000/api/dictionary/test/four" --header "content-type:application/json" ${VERBOSE}
+
+curl -X POST "http://localhost:8000/api/dictionary/test/up${NUMBER}" ${VERBOSE}
+curl -X GET "http://localhost:8000/api/dictionary/test/up${NUMBER}" ${VERBOSE}
