@@ -2,6 +2,7 @@
 This is a simple Restful service that integrates the Wordament Solver.  
 
 # TODO
+* Fix data input validation
 * Metrics for endpoints from health endpoint
 * Logging
 * It relies on a singleton which stops tests from working properly
@@ -34,3 +35,7 @@ curl -X GET http://localhost:8000/api/dictionary/test --header "content-type:app
 
 ```
 
+# Test CloudBuild
+```
+gcloud builds submit --project open-source-01 --substitutions=COMMIT_SHA=test,BRANCH_NAME=master,REPO_NAME=wordament_solver_service
+```

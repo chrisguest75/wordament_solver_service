@@ -1,0 +1,5 @@
+.env
+simple_client
+.vscode
+.pytest_cache
+wordament/.venv

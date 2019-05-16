@@ -14,33 +14,11 @@ steps:
     ls -la
     echo ${_GITHUB_USERNAME}
     echo ${_TWO_PART_VERSION}
-
 # Decrypt the ssh key.
-- name: 'gcr.io/cloud-builders/gcloud'
-  args:
-  - kms
-  - decrypt
-  - --ciphertext-file=cloudbuild_ssh.key.enc
-  - --plaintext-file=/root/.ssh/id_rsa
-  - --location=global
-  - --keyring=cloudbuild-keyring
-  - --key=github-key
-  volumes:
-  - name: 'ssh'
-    path: /root/.ssh
-
-# Modify known hosts.
-- name: 'gcr.io/cloud-builders/git'
-  entrypoint: '/bin/bash'
-  args:
-  - '-c'
-  - |
-    chmod 600 /root/.ssh/id_rsa
-    cat <<EOF >/root/.ssh/config
-    Hostname github.com
-    IdentityFile /root/.ssh/id_rsa
-    EOF
-    mv known_hosts /root/.ssh/known_hosts
+- name: 'gcr.io/open-source-01/custom_cloudbuild_sshkeys:0.0.5'
+  entrypoint: '/workbench/decrypt.sh'
+  args: ['/workbench']
+  dir: '/workbench'
   volumes:
   - name: 'ssh'
     path: /root/.ssh
@@ -59,8 +37,8 @@ steps:
   args:
   - 'build'
   - '--tag=gcr.io/$PROJECT_ID/$REPO_NAME:latest'
-  - '--file=./${_CONTAINER_SUBFOLDER}/Dockerfile'
-  - './${_CONTAINER_SUBFOLDER}'
+  - '--file=${_CONTAINER_SUBFOLDER}/Dockerfile'
+  - '${_CONTAINER_SUBFOLDER}'
 
   # TODO: This has an issue that it might have had another commit since build trigger.  
   #- './$REPO_NAME/hellonode'
@@ -96,6 +74,3 @@ steps:
 # These are images that pushed as well
 images: ['gcr.io/$PROJECT_ID/$REPO_NAME:latest',
         'gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA']
-
-
-
