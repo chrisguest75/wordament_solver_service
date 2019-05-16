@@ -178,11 +178,24 @@ paths:
 
 
         
-  /puzzle/solve:
+  /puzzle/solve/{grid}:
     get:
-      operationId: puzzle.read
+      operationId: puzzle.solve
       summary: "Get the words found in the puzzle"
       description: "Get all the words found"
+      parameters:
+        - name: grid
+          description: Word to test in dictionary
+          in: path
+          type: string
+          required: true
+          pattern: "^[a-zA-Z0-9-]*$"        
+        - name: dictionary_id
+          description: Dictionary unique id
+          in: query
+          type: string
+          required: true
+          pattern: "^[a-zA-Z0-9-]*$"  
       responses:
         '200':
           description: "Successful read numbers operation"

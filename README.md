@@ -1,6 +1,14 @@
 # README.md
 This is a simple Restful service that integrates the Wordament Solver.  
 
+# TODO
+* Metrics for endpoints from health endpoint
+* Logging
+* It relies on a singleton which stops tests from working properly
+* Does it make sense to pass wordlist as array rather than {[]}
+* Run tests in cloudbuild
+* Deploy to endpoints and kubernetes
+
 # Usage
 To host you can use the docker-compose file. 
 
