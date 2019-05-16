@@ -25,7 +25,8 @@ def test_empty_dictionaries(client):
 
 @pytest.mark.parametrize("name", ["01234567890123456789012345678901234567890", 
                                    "illegal_",
-                                    "!noname"])
+                                    "!noname",
+                                    "illegal_/word"])
 def test_invalid_dictionary_names(client, name):
     """ Create dictionaries of invalid names
     """
