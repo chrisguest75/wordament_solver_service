@@ -31,6 +31,23 @@ paths:
         '200':
           description: Status message for if default dictionary is loaded
 
+  /dictionary:
+    get:
+      operationId: dictionary.get_names
+      summary: "Get a list of dictionaries"
+      description: "Get a list of dictionaries."
+      consumes:
+        - application/json
+      responses:
+        '200':
+          description: 'Array of dictionaries'
+          schema:
+            type: "array"
+            items:
+              properties:
+                name:
+                  type: "string"
+
   /dictionary/{dictionary_id}:
     get:
       operationId: dictionary.get
@@ -162,9 +179,8 @@ paths:
 
 
         
-  /puzzle:
+  /puzzle/solve:
     get:
-      tags: [Wordament]
       operationId: puzzle.read
       summary: "Get the words found in the puzzle"
       description: "Get all the words found"

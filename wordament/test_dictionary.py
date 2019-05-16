@@ -11,36 +11,111 @@ def client():
         yield c
 
 def test_health(client):
+    """ Test health endpoint returns 200    
+    """
     response = client.get('/api/health')
     assert response.status_code == 200
 
+def test_empty_dictionaries(client):
+    """ Any empty environment should have no in built dictionaries    
+    """
+    response = client.get('/api/dictionary', headers={'content-type': 'application/json'})
+    assert response.status_code == 200
+    assert len(response.json["names"]) == 0 
+
 # curl -X POST "http://localhost:8000/api/dictionary/test" -d '["one", "two", "three"]' --header "content-type:application/json" ${VERBOSE}
 def test_create_dictionary(client):
+    """ Create a dictionary and check it exists
+    """
     response = client.post('/api/dictionary/test', 
             data='["one", "two", "three"]', 
             headers={'content-type': 'application/json'})
     assert response.status_code == 201
 
-
-
-
+    response = client.get('/api/dictionary', headers={'content-type': 'application/json'})
+    assert response.status_code == 200
+    assert len(response.json["names"]) == 1 
 
 # curl -X GET "http://localhost:8000/api/dictionary/test" --header "content-type:application/json" ${VERBOSE}
+def test_get_dictionary(client):
+    """ Create a dictionary and ensure it has correct properties
+    """
+    response = client.post('/api/dictionary/test', 
+            data='["one", "two"]', 
+            headers={'content-type': 'application/json'})
+    assert response.status_code == 201
+    response = client.get('/api/dictionary/test', 
+            headers={'content-type': 'application/json'})
+    assert response.json["id"] == "test"
+    assert response.json["longest_word_length"] == 3
+    assert response.json["num_of_words"] == 2
 
 # curl -X PUT "http://localhost:8000/api/dictionary/test" -d '["wrwr", "wrwrw", "qweewe"]' --header "content-type:application/json" ${VERBOSE}
+def test_add_dictionary(client):
+    """ Create a populated dictionary, add a list of words to it and check properties are correct 
+    """
+    response = client.post('/api/dictionary/test', 
+            data='["one", "two"]', 
+            headers={'content-type': 'application/json'})
+    assert response.status_code == 201
+    response = client.get('/api/dictionary/test', 
+            headers={'content-type': 'application/json'})
+    assert response.json["id"] == "test"
+    assert response.json["longest_word_length"] == 3
+    assert response.json["num_of_words"] == 2
 
-# curl -X GET "http://localhost:8000/api/dictionary/test" --header "content-type:application/json" ${VERBOSE}
-
-# read -p "Enter word to add to dictionary: " NUMBER
-# echo "Add $NUMBER"
-# quoted="\"$NUMBER\""
+    # add words including repeats
+    response = client.put('/api/dictionary/test', 
+            data='["one", "two", "three", "four"]', 
+            headers={'content-type': 'application/json'})
+    assert response.status_code == 201
+    response = client.get('/api/dictionary/test', 
+            headers={'content-type': 'application/json'})
+    assert response.json["id"] == "test"
+    assert response.json["longest_word_length"] == 5
+    assert response.json["num_of_words"] == 4
 
 # curl -X PUT "http://localhost:8000/api/dictionary/test" -d "[$quoted]" --header "content-type:application/json" ${VERBOSE}
+def test_add_single_word_dictionary(client):
+    """ Create a populated dictionary, add a single word to it and check properties are correct 
+    """
+    response = client.post('/api/dictionary/test', 
+            data='["one", "two"]', 
+            headers={'content-type': 'application/json'})
+    assert response.status_code == 201
 
-# curl -X GET "http://localhost:8000/api/dictionary/test" --header "content-type:application/json" ${VERBOSE}
+    response = client.post('/api/dictionary/test/fifteen', 
+            headers={'content-type': 'application/json'})
+    assert response.status_code == 201
+
+    response = client.get('/api/dictionary/test', 
+            headers={'content-type': 'application/json'})
+    assert response.json["id"] == "test"
+    assert response.json["longest_word_length"] == 7
+    assert response.json["num_of_words"] == 3
+
 
 # curl -X GET "http://localhost:8000/api/dictionary/test/one" --header "content-type:application/json" ${VERBOSE}
-# curl -X GET "http://localhost:8000/api/dictionary/test/four" --header "content-type:application/json" ${VERBOSE}
+def test_word_existence(client):
+    """ Create a populated dictionary, test that words exist
+    """
+    response = client.post('/api/dictionary/test', 
+            data='["one", "two"]', 
+            headers={'content-type': 'application/json'})
+    assert response.status_code == 201
 
-# curl -X POST "http://localhost:8000/api/dictionary/test/up${NUMBER}" ${VERBOSE}
-# curl -X GET "http://localhost:8000/api/dictionary/test/up${NUMBER}" ${VERBOSE}
+    response = client.post('/api/dictionary/test/fifteen', headers={'content-type': 'application/json'})
+    assert response.status_code == 201
+
+    response = client.get('/api/dictionary/test', headers={'content-type': 'application/json'})
+    assert response.json["id"] == "test"
+    assert response.json["longest_word_length"] == 7
+    assert response.json["num_of_words"] == 3
+
+    response = client.get('/api/dictionary/test/fifteen', headers={'content-type': 'application/json'})
+    assert response.status_code == 200
+
+    response = client.get('/api/dictionary/test/sixteen', headers={'content-type': 'application/json'})
+    assert response.status_code == 404
+
+

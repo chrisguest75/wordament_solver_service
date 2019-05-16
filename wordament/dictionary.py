@@ -3,6 +3,16 @@ from py_wordament_helper.dictionary_trie import dictionary_trie
 from state_manager import state_manager_factory
 from connexion import NoContent
 
+def get_names():
+    sm = state_manager_factory.create()
+    if not sm.exists("dictionaries"):
+        return {"names":[]}, 200  
+    else:
+        dictionaries = sm.get("dictionaries")
+        names = list(dictionaries.keys())
+
+        return {"names":names}, 200
+
 def create(dictionary_id, words):
     sm = state_manager_factory.create()
     if not sm.exists("dictionaries"):
