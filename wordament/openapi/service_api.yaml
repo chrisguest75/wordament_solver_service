@@ -34,13 +34,13 @@ paths:
   /dictionary:
     get:
       operationId: dictionary.get_names
-      summary: "Get a list of dictionaries"
-      description: "Get a list of dictionaries."
+      summary: "Get the list of available dictionaries"
+      description: "Get the list of available dictionary names"
       consumes:
         - application/json
       responses:
         '200':
-          description: 'Array of dictionaries'
+          description: 'Array of dictionary names.'
           schema:
             type: "array"
             items:
@@ -51,15 +51,15 @@ paths:
   /dictionary/{dictionary_id}:
     get:
       operationId: dictionary.get
-      summary: "Get a named dictionary"
-      description: "Get a named dictionary."
+      summary: "Get properties for a named dictionary"
+      description: "Get properties for a named dictionary."
       consumes:
         - application/json
       parameters:
         - $ref: '#/parameters/dictionary_id'        
       responses:
         '200':
-          description: 'Dictionary found'
+          description: 'Dictionary properties are returned'
           schema: 
             properties:
               id:
@@ -72,18 +72,13 @@ paths:
                 type: integer
                 description: Longest word length
 
-          # content:
-          #   application/json:
-          #     schema:
-          #       $ref: '#/components/schemas/Dictionary'
-
         '404':
-          description: '#/parameters/dictionary_id does not exist'
+          description: 'Dictionary does not exist'
 
     post:
       operationId: dictionary.create
       summary: "Create a named dictionary"
-      description: "Create a named dictionary.  The payload can contain an initial set of words for the dictionary"
+      description: "Create a named dictionary. The payload can contain an initial set of words for the dictionary"
       consumes:
         - application/json
       parameters:
@@ -99,9 +94,11 @@ paths:
                   type: "string"
       responses:
         '201':
-          description: 'Created #/parameters/dictionary_id'
+          description: 'Dictionary has been created'
+        '400':
+          description: 'Dictionary name is too long'
         '409':
-          description: '#/parameters/dictionary_id already exists'
+          description: 'Dictionary already exists'
 
     put:
       operationId: dictionary.add_words

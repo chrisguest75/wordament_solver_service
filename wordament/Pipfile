@@ -12,7 +12,6 @@ connexion = {extras = ["swagger-ui"],version = "*"}
 ptvsd = "*"
 python-json-logger = "*"
 py-wordament-helper = {git = "https://github.com/chrisguest75/py-wordament-helper"}
-pytest = "*"
 
 [requires]
 python_version = "3.7"
