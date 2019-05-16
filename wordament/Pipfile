@@ -6,6 +6,8 @@ verify_ssl = true
 [dev-packages]
 pytest = "*"
 flake8 = "*"
+coverage = "*"
+pytest-cov = "*"
 
 [packages]
 connexion = {extras = ["swagger-ui"],version = "*"}

@@ -23,6 +23,20 @@ def test_empty_dictionaries(client):
     assert response.status_code == 200
     assert len(response.json["names"]) == 0 
 
+@pytest.mark.parametrize("name", ["01234567890123456789012345678901234567890", 
+                                   "illegal_",
+                                    "!noname"])
+def test_invalid_dictionary_names(client, name):
+    """ Create dictionaries of invalid names
+    """
+    response = client.post(f'/api/dictionary/{name}', 
+            data='["one", "two", "three"]', 
+            headers={'content-type': 'application/json'})
+    assert response.status_code == 400
+
+    response = client.get(f'/api/dictionary/{name}', headers={'content-type': 'application/json'})
+    assert response.status_code == 400
+
 # curl -X POST "http://localhost:8000/api/dictionary/test" -d '["one", "two", "three"]' --header "content-type:application/json" ${VERBOSE}
 def test_create_dictionary(client):
     """ Create a dictionary and check it exists

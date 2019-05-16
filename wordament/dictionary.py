@@ -3,6 +3,9 @@ from py_wordament_helper.dictionary_trie import dictionary_trie
 from state_manager import state_manager_factory
 from connexion import NoContent
 
+def validate_dictionary_id(id):
+    return len(id) > 40
+
 def get_names():
     sm = state_manager_factory.create()
     if not sm.exists("dictionaries"):
@@ -14,6 +17,9 @@ def get_names():
         return {"names":names}, 200
 
 def create(dictionary_id, words):
+    if validate_dictionary_id(dictionary_id):
+        return NoContent, 400
+
     sm = state_manager_factory.create()
     if not sm.exists("dictionaries"):
         trie = dictionary_trie(words)
@@ -23,6 +29,9 @@ def create(dictionary_id, words):
         return NoContent, 409 
 
 def add_words(dictionary_id, words):
+    if validate_dictionary_id(dictionary_id):
+        return NoContent, 400
+        
     sm = state_manager_factory.create()
     if not sm.exists("dictionaries"):
         return NoContent, 404  
@@ -34,6 +43,9 @@ def add_words(dictionary_id, words):
         return NoContent, 201  
 
 def get(dictionary_id):
+    if validate_dictionary_id(dictionary_id):
+        return NoContent, 400
+
     sm = state_manager_factory.create()
     if not sm.exists("dictionaries"):
         return NoContent, 404  

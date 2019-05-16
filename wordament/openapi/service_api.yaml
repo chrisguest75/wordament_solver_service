@@ -72,6 +72,8 @@ paths:
                 type: integer
                 description: Longest word length
 
+        '400':
+          description: 'Dictionary name is not valid'
         '404':
           description: 'Dictionary does not exist'
 
