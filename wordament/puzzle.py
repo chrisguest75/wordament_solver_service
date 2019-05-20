@@ -24,11 +24,3 @@ def solve(grid, dictionary_id):
             output["words"].append(word)
 
         return output, 200
-
-
-# def add(numbers):
-#     number = numbers.get("number", None)
-#     CURRENT_STORE.append(number)
-#     return 201
-
-

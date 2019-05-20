@@ -25,6 +25,11 @@ Browse to http://localhost:8000/api/ui
 # Debugging and Unittests
 You can use VSCode to load and execute the tests. Use 'pipenv install --dev'
 
+# Code Coverage
+```
+pytest --cov=. --cov-report html:coverage
+open ./coverage/index.html 
+```
 
 # Testing 
 You can use curl commands.  Or there is a file in the wordament [./wordament/quick_endpoint_tests.sh](./wordament/quick_endpoint_tests.sh)
