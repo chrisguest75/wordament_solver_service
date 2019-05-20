@@ -17,3 +17,5 @@ loggers:
     level: DEBUG
   wordament.rest.dictionary:
     level: DEBUG
+  wordament.rest.health:
+    level: DEBUG

@@ -2,14 +2,12 @@
 This is a simple Restful service that integrates the Wordament Solver.  
 
 # TODO
-* It relies on a singleton which stops tests from working properly
 * Run tests in cloudbuild
 * Fix data input validation
 * Add comments to the code
 * Think about how to persist state maybe in redis and mysql.
 * Performance analysis - correlationids, open tracing.  
 * Metrics for endpoints from health endpoint
-* Logging
 * Does it make sense to pass wordlist as array rather than {[]}
 * Deploy to endpoints and kubernetes
 
