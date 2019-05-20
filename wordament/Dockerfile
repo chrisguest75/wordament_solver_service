@@ -21,6 +21,7 @@ COPY ./health.py /workbench/health.py
 COPY ./puzzle.py /workbench/puzzle.py
 COPY ./dictionary.py /workbench/dictionary.py
 COPY ./state_manager.py /workbench/state_manager.py
+COPY ./state_manager_factory.py /workbench/state_manager_factory.py
 COPY ./openapi/service_api.yaml /workbench/openapi/service_api.yaml
 COPY ./logging_config.yaml /workbench/logging_config.yaml
 #COPY ./words_alpha.txt /workbench/words_alpha.txt

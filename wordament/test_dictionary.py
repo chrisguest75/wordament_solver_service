@@ -15,12 +15,6 @@ def client():
 def setup_test():
     injector_factory.configure(True)  
 
-def test_health(client):
-    """ Test health endpoint returns 200    
-    """
-    response = client.get('/api/health')
-    assert response.status_code == 200
-
 def test_empty_dictionaries(client):
     """ Any empty environment should have no in built dictionaries    
     """

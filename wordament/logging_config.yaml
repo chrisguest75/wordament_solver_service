@@ -12,3 +12,8 @@ handlers:
     level: DEBUG
     stream: ext://sys.stdout
     formatter: json
+loggers:
+  wordament.rest.puzzle:
+    level: DEBUG
+  wordament.rest.dictionary:
+    level: DEBUG

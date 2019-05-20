@@ -36,7 +36,7 @@ class injector_factory():
 
         return injector_factory.injector
 
-class state_manager_factory:
+class state_manager_factory():
     """Creates a singleton instance of state_manager     
     """
     def __init__(self):

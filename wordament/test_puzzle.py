@@ -19,14 +19,25 @@ def test_solve_puzzle_illegal_dictionary_name(client):
     """ Invoke solve with an illegal dictionary name
     """
     response = client.get('/api/puzzle/solve/GLNTSRAWRPHSEOPS?dictionary_id=01234567890123456789012345678901234567890', headers={'content-type': 'application/json'})
-    assert response.status_code == 500
+    assert response.status_code == 400
 
 
 def test_solve_puzzle_missing_dictionary(client):
     """ Invoke solve with a dictionary name that does not exist.
     """
     response = client.get('/api/puzzle/solve/GLNTSRAWRPHSEOPS?dictionary_id=puzzle1', headers={'content-type': 'application/json'})
-    assert response.status_code == 500
+    assert response.status_code == 404
+
+def test_solve_puzzle_incorrect_grid_size(client):
+    """ Invoke solve with a dictionary name that does not exist.
+    """
+    response = client.post('/api/dictionary/puzzle1', 
+            data='["like", "shops", "shop", "wasp", "want", "hops"]', 
+            headers={'content-type': 'application/json'})
+    assert response.status_code == 201
+
+    response = client.get('/api/puzzle/solve/GLNTSRPHSEOPS?dictionary_id=puzzle1', headers={'content-type': 'application/json'})
+    assert response.status_code == 400
 
 def test_solve_simple_puzzle(client):
     """ Create a dictionary and check it exists
@@ -49,4 +60,24 @@ def test_solve_simple_puzzle(client):
     assert "want" in response.json["words"]
     assert "hops" in response.json["words"]
 
+def test_solve_simple_puzzle_mixedcase_grid(client):
+    """ Create a dictionary and check it exists
+    """
+    response = client.post('/api/dictionary/puzzle1', 
+            data='["like", "shops", "shop", "wasp", "want", "hops"]', 
+            headers={'content-type': 'application/json'})
+    assert response.status_code == 201
+
+    response = client.get('/api/dictionary', headers={'content-type': 'application/json'})
+    assert response.status_code == 200
+    assert len(response.json["names"]) == 1 
+
+    response = client.get('/api/puzzle/solve/GLNTsrawRPhSEOpS?dictionary_id=puzzle1', headers={'content-type': 'application/json'})
+    assert response.status_code == 200
+    assert len(response.json["words"]) == 5 
+    assert "shops" in response.json["words"]
+    assert "shop" in response.json["words"]
+    assert "wasp" in response.json["words"]
+    assert "want" in response.json["words"]
+    assert "hops" in response.json["words"]
 

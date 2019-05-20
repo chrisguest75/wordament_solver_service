@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 import io 
 import requests
+import os
 
 if __name__ == "__main__":
+
     base_url = "http://localhost:8000/api"
+    if 'SERVER_URL' in os.environ:
+        base_url = os.environ['SERVER_URL']
 
     with(io.open("./test_data/words_alpha.txt")) as f:
         lines = [line.rstrip() for line in f]
@@ -35,7 +39,7 @@ if __name__ == "__main__":
             response = requests.put(f"{base_url}/dictionary/full", data=words, headers={'content-type': 'application/json'})
 
         response = requests.get(f"{base_url}/dictionary/full")
-        print("loaded words: " + response.json()["num_of_words"])
+        print("loaded words: " + str(response.json()["num_of_words"]))
 
 
     grid = input("Enter grid:")
