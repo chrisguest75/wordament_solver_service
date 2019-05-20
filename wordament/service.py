@@ -16,10 +16,11 @@ import yaml
 import ptvsd
 
 import connexion
+from state_manager_factory import state_manager_factory, injector_factory
 
 app = connexion.FlaskApp(__name__, specification_dir='openapi/')
 app.add_api('service_api.yaml')
-
+injector_factory.configure(True)
 
 def log_uncaught_exceptions(exc_type, exc_value, exc_traceback):
     if issubclass(exc_type, KeyboardInterrupt):

@@ -1,5 +1,9 @@
 import pytest
-from state_manager import state_manager_factory
+from state_manager_factory import state_manager_factory, injector_factory
+
+@pytest.fixture(autouse=True)
+def setup_test():
+    injector_factory.configure(True)  
 
 def test_singleton():
     sm1 = state_manager_factory.create()
@@ -30,3 +34,4 @@ def test_get_named_object():
     assert(len(sm.names()) == 1)
     assert("value" in sm.get("hello"))
     assert(sm.get("hello")["value"] == 10)
+

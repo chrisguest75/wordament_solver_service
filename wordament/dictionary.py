@@ -1,6 +1,6 @@
 
 from py_wordament_helper.dictionary_trie import dictionary_trie
-from state_manager import state_manager_factory
+from state_manager_factory import state_manager_factory
 from connexion import NoContent
 
 def validate_dictionary_id(id):
