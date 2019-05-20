@@ -35,3 +35,20 @@ def test_get_named_object():
     assert("value" in sm.get("hello"))
     assert(sm.get("hello")["value"] == 10)
 
+def test_add_second_named_object():
+    sm = state_manager_factory.create()
+    assert(len(sm.names()) == 0)
+    sm.add("hello", {"value": 10})
+    sm.add("hello", {"value1": 20})
+    sm.add("hello2", {"value9": 9})
+    sm.add("hello2", {"value10": 100})
+    assert(len(sm.names()) == 2)
+    assert("value" in sm.get("hello"))
+    assert(sm.get("hello")["value"] == 10)
+    assert("value1" in sm.get("hello"))
+    assert(sm.get("hello")["value1"] == 20)    
+
+    assert("value9" in sm.get("hello2"))
+    assert(sm.get("hello2")["value9"] == 9)
+    assert("value10" in sm.get("hello2"))
+    assert(sm.get("hello2")["value10"] == 100)    

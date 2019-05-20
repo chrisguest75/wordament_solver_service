@@ -26,7 +26,14 @@ def create(dictionary_id, words):
         sm.add("dictionaries", {dictionary_id: trie})
         return NoContent, 201  
     else:
-        return NoContent, 409 
+        dictionaries = sm.get("dictionaries")
+        if dictionary_id in dictionaries:
+            return NoContent, 409 
+        else:
+            trie = dictionary_trie(words)
+            sm.add("dictionaries", {dictionary_id: trie})
+            return NoContent, 201  
+
 
 def add_words(dictionary_id, words):
     if validate_dictionary_id(dictionary_id):
