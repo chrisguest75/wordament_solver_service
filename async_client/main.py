@@ -38,7 +38,6 @@ async def build_dictionary(session, base_url: str, name:str):
         if len(lines) > 0: 
             response = await add_to_dictionary(session, base_url, name, lines)    
             logging.debug("building dictionary response {}".format(response))
-        
 
 
 async def solve(session, base_url: str, grid: str, name:str):
@@ -47,31 +46,45 @@ async def solve(session, base_url: str, grid: str, name:str):
         response_json = await response.json()
         return response.status, response_json
 
+
 async def dictionary_stat(session, base_url: str, name:str):
     url = f"{base_url}/dictionary/{name}"
     async with session.get(url) as response:
         response_json = await response.json()
         return response.status, response_json
 
+async def dictionary_names(session, base_url: str):
+    url = f"{base_url}/dictionary"
+    async with session.get(url) as response:
+        response_json = await response.json()
+        return response.status, response_json
+
 async def main(base_url: str):
-    name = "full"
     # We use only one session
     async with aiohttp.ClientSession() as session:
-        response = await dictionary_stat(session, base_url, name)
-        logging.info(response) 
-        #if response[1]["num_of_words"]
-
-        response = await create_dictionary(session, base_url, name)
-        logging.info(response)
-        response = await build_dictionary(session, base_url, name)
-        logging.info(response)
-
         while True:
+            response = await dictionary_names(session, base_url)
+            logging.info(response)             
+
+            name = input("Dictionary name (quit):")
+            if name.lower() == "quit":
+                break
+            response = await dictionary_stat(session, base_url, name)
+            logging.info(response) 
+            if response[0] != 200 or response[1]["num_of_words"] < 370103:
+                response = await create_dictionary(session, base_url, name)
+                logging.info(response)
+                response = await build_dictionary(session, base_url, name)
+                logging.info(response)
+
             # grid = 'GLNTSRAWRPHSEOPS'
-            grid = input("Enter grid or (quit):")
-            if grid.lower() != "quit":
+            grid = input("Enter grid or (quit) - examples 'GLNTSRAWRPHSEOPS':")
+            if grid.lower() == "quit":
+                break
+            else:
                 response = await solve(session, base_url, grid, name)
                 logging.info(response)
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
