@@ -19,3 +19,7 @@ loggers:
     level: DEBUG
   wordament.rest.health:
     level: DEBUG
+  py_wordament_helper.dictionary_trie:
+    level: DEBUG    
+  py_wordament_helper.wordament_helper:
+    level: DEBUG    

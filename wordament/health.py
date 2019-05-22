@@ -1,7 +1,3 @@
-
-
-
-
 from state_manager_factory import state_manager_factory
 from connexion import NoContent
 import logging
