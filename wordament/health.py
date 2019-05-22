@@ -9,7 +9,7 @@ def health():
 
     sm = state_manager_factory.create()
     if not sm.exists("dictionaries"):
-        return NoContent, 200  
+        return NoContent, 200
     else:
         dictionaries = sm.get("dictionaries")
         names = dictionaries.keys()

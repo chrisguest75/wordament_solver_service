@@ -185,7 +185,7 @@
         },
         "py-wordament-helper": {
             "git": "https://github.com/chrisguest75/py-wordament-helper",
-            "ref": "20897a9ccdcfe10659ff1657332ae5c3926c2bde"
+            "ref": "bf645df7b4740d2bed398a25535bc0d6178d7ce2"
         },
         "python-json-logger": {
             "hashes": [

@@ -1,5 +1,4 @@
 
-
 class state_manager(object):
     """Use this class to store named global state
     Add objects into the property bag as a dictionary.  

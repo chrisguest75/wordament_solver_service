@@ -6,14 +6,17 @@ flask_app = connexion.FlaskApp(__name__)
 flask_app.add_api('./openapi/service_api.yaml')
 flask_app.testing = True
 
+
 @pytest.fixture(scope='module')
 def client():
     with flask_app.app.test_client() as c:
         yield c
 
+
 @pytest.fixture(autouse=True)
 def setup_test():
-    injector_factory.configure(True)  
+    injector_factory.configure(True)
+
 
 def test_solve_puzzle_illegal_dictionary_name(client):
     """ Invoke solve with an illegal dictionary name
@@ -28,16 +31,18 @@ def test_solve_puzzle_missing_dictionary(client):
     response = client.get('/api/puzzle/solve/GLNTSRAWRPHSEOPS?dictionary_id=puzzle1', headers={'content-type': 'application/json'})
     assert response.status_code == 404
 
+
 def test_solve_puzzle_incorrect_grid_size(client):
     """ Invoke solve with a dictionary name that does not exist.
     """
-    response = client.post('/api/dictionary/puzzle1', 
+    response = client.post('/api/dictionary/puzzle1',
             data='["like", "shops", "shop", "wasp", "want", "hops"]', 
             headers={'content-type': 'application/json'})
     assert response.status_code == 201
 
     response = client.get('/api/puzzle/solve/GLNTSRPHSEOPS?dictionary_id=puzzle1', headers={'content-type': 'application/json'})
     assert response.status_code == 400
+
 
 def test_solve_simple_puzzle(client):
     """ Create a dictionary and check it exists
@@ -60,6 +65,7 @@ def test_solve_simple_puzzle(client):
     assert "want" in response.json["words"]
     assert "hops" in response.json["words"]
 
+
 def test_solve_simple_puzzle_mixedcase_grid(client):
     """ Create a dictionary and check it exists
     """
@@ -80,4 +86,3 @@ def test_solve_simple_puzzle_mixedcase_grid(client):
     assert "wasp" in response.json["words"]
     assert "want" in response.json["words"]
     assert "hops" in response.json["words"]
-

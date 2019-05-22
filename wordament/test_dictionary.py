@@ -11,9 +11,11 @@ def client():
     with flask_app.app.test_client() as c:
         yield c
 
+
 @pytest.fixture(autouse=True)
 def setup_test():
     injector_factory.configure(True)  
+
 
 def test_empty_dictionaries(client):
     """ Any empty environment should have no in built dictionaries    
@@ -21,6 +23,7 @@ def test_empty_dictionaries(client):
     response = client.get('/api/dictionary', headers={'content-type': 'application/json'})
     assert response.status_code == 200
     assert len(response.json["names"]) == 0 
+
 
 @pytest.mark.parametrize("name", ["01234567890123456789012345678901234567890", 
                                    "illegal_",
@@ -37,6 +40,7 @@ def test_invalid_dictionary_names(client, name):
     response = client.get(f'/api/dictionary/{name}', headers={'content-type': 'application/json'})
     assert response.status_code == 400
 
+
 # curl -X POST "http://localhost:8000/api/dictionary/test" -d '["one", "two", "three"]' --header "content-type:application/json" ${VERBOSE}
 def test_create_dictionary(client):
     """ Create a dictionary and check it exists
@@ -49,6 +53,7 @@ def test_create_dictionary(client):
     response = client.get('/api/dictionary', headers={'content-type': 'application/json'})
     assert response.status_code == 200
     assert len(response.json["names"]) == 1 
+
 
 # curl -X GET "http://localhost:8000/api/dictionary/test" --header "content-type:application/json" ${VERBOSE}
 def test_get_dictionary(client):
@@ -63,6 +68,7 @@ def test_get_dictionary(client):
     assert response.json["id"] == "test"
     assert response.json["longest_word_length"] == 3
     assert response.json["num_of_words"] == 2
+
 
 def test_get_non_existent_dictionary(client):
     """ Create a dictionary and ensure it has correct properties
@@ -182,5 +188,3 @@ def test_word_existence(client):
 
     response = client.get('/api/dictionary/test/sixteen', headers={'content-type': 'application/json'})
     assert response.status_code == 404
-
-
