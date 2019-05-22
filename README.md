@@ -1,6 +1,8 @@
 # README.md
 This is a simple Restful service that integrates the Wordament Solver.  
 
+The words alpha has been sourced from [words_alpha.txt](https://github.com/dwyl/english-words/blob/master/words_alpha.txt)
+
 # TODO
 * Run tests in cloudbuild
 * Fix data input validation
