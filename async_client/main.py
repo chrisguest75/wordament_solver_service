@@ -6,12 +6,14 @@ import aiohttp
 import aiofiles
 import json
 
+logger = logging.getLogger()
+
 MAX_WORD_LOAD = 1000
 
 # read a file and despatch a 100 lines at a time to wordament.  
 async def create_dictionary(session, base_url: str, name:str): 
     url = f"{base_url}/dictionary/{name}"
-    logging.debug(f"create_dictionary {url}")
+    logger.debug(f"create_dictionary {url}")
     async with session.post(url, data="[]", headers={'content-type': 'application/json'}) as response:
         response_json = await response.json()
         return response.status, response_json
@@ -19,7 +21,7 @@ async def create_dictionary(session, base_url: str, name:str):
 
 async def add_to_dictionary(session, base_url: str, name:str, words):
     url = f"{base_url}/dictionary/{name}"
-    logging.debug(f"add_to_dictionary {url}")
+    logger.debug(f"add_to_dictionary {url}")
     async with session.put(url, data=json.dumps(words), headers={'content-type': 'application/json'}) as response:
         response_json = await response.json()
         return response.status, response_json
@@ -32,12 +34,12 @@ async def build_dictionary(session, base_url: str, name:str):
             lines.append(line.strip())
             if (len(lines) == MAX_WORD_LOAD):
                 response = await add_to_dictionary(session, base_url, name, lines)    
-                logging.debug("building dictionary response {}".format(response))
+                logger.debug("building dictionary response {}".format(response))
                 lines = []
 
         if len(lines) > 0: 
             response = await add_to_dictionary(session, base_url, name, lines)    
-            logging.debug("building dictionary response {}".format(response))
+            logger.debug("building dictionary response {}".format(response))
 
 
 async def solve(session, base_url: str, grid: str, name:str):
@@ -64,18 +66,18 @@ async def main(base_url: str):
     async with aiohttp.ClientSession() as session:
         while True:
             response = await dictionary_names(session, base_url)
-            logging.info(response)             
+            logger.info(response)             
 
             name = input("Dictionary name (quit):")
             if name.lower() == "quit":
                 break
             response = await dictionary_stat(session, base_url, name)
-            logging.info(response) 
+            logger.info(response) 
             if response[0] != 200 or response[1]["num_of_words"] < 370103:
                 response = await create_dictionary(session, base_url, name)
-                logging.info(response)
+                logger.info(response)
                 response = await build_dictionary(session, base_url, name)
-                logging.info(response)
+                logger.info(response)
 
             # grid = 'GLNTSRAWRPHSEOPS'
             grid = input("Enter grid or (quit) - examples 'GLNTSRAWRPHSEOPS':")
@@ -83,12 +85,11 @@ async def main(base_url: str):
                 break
             else:
                 response = await solve(session, base_url, grid, name)
-                logging.info(response)
+                logger.info(response)
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
-    logging.info("Hello")
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     base_url = "http://localhost:8000/api"
     if 'SERVER_URL' in os.environ:
