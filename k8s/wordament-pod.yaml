@@ -8,7 +8,16 @@ spec:
   - name: wordament
     image: test_wordament:latest
     imagePullPolicy: Never
+    ports:
+      - name: debug
+        containerPort: 5678          
+      - name: http
+        containerPort: 8000
+
     env:
       - name: PORT
         value: "8000"
-  
+      - name: DEBUGGER
+        value: "True"
+      - name: WAIT
+        value: "False"

@@ -61,3 +61,39 @@ NOTE: The "imagePullPolicy: Never" means we use the local image registry.
 cd ./wordament
 skaffold dev --profile=testlocaldockerk8s --no-prune
 ```
+
+# Debugging using skaffold and VSCode
+If you want to live debug the service from VSCode you can run Skaffold with port-forwarding.
+
+```
+cd ./wordament
+skaffold dev --profile=testlocaldockerk8s --no-prune --port-forward
+```
+
+You'll need to change the manifests in ./k8s to ensure the DEBUGGER is enabled.  
+If you'd like to wait for the debugger to attach then also set WAIT to True. 
+
+```
+    env:
+      - name: DEBUGGER
+        value: "True"
+      - name: WAIT
+        value: "False"
+```
+
+Your .vscode config should look something like this. 
+```
+        {
+            "name": "Python: Remote Attach",
+            "type": "python",
+            "request": "attach",
+            "port": 5678,
+            "host": "localhost",
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "."
+                }
+            ]
+        },
+```
