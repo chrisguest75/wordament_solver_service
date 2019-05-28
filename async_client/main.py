@@ -3,10 +3,10 @@ import os
 import logging
 import asyncio
 import aiohttp
-import aiofiles
 import json
 import sys
 import functools
+from solver_client import solver_client
 
 logger = logging.getLogger()
 
@@ -33,92 +33,18 @@ prompt = Prompt()
 raw_input = functools.partial(prompt, end='', flush=True)
 
 
-async def create_dictionary(session, base_url: str, name:str): 
-    """ Create an empty dictionary on the server 
-    """
-    url = f"{base_url}/dictionary/{name}"
-    logger.debug(f"create_dictionary {url}")
-    async with session.post(url, data="[]", headers={'content-type': 'application/json'}) as response:
-        response_json = await response.json()
-        return response.status, response_json
-
-
-async def add_to_dictionary(session, base_url: str, name:str, words):
-    """ Add an array of words to the dictionary
-    """
-    url = f"{base_url}/dictionary/{name}"
-    logger.debug(f"add_to_dictionary {url}")
-    async with session.put(url, data=json.dumps(words), headers={'content-type': 'application/json'}) as response:
-        response_json = await response.json()
-        return response.status, response_json
-
-
-async def build_dictionary(session, base_url: str, name:str):
-    """ Build the dictionary using asynchronous tasks. 
-    NOTE: It only despatches one request at a time.   
-    """
-    async with aiofiles.open("../test_data/words_alpha.txt") as f:
-        lines = []
-        async for line in f:
-            lines.append(line.strip())
-            if (len(lines) == MAX_WORD_LOAD):
-                task = asyncio.create_task(add_to_dictionary(session, base_url, name, lines))
-                logger.debug(f"wait on task - {id(task)} for {name}")
-                response = await task     
-                logger.debug("building dictionary response {}".format(response))
-                lines = []
-
-        # do remaining words
-        if len(lines) > 0: 
-            task = asyncio.create_task(add_to_dictionary(session, base_url, name, lines))    
-            logger.debug(f"wait on task - {id(task)} for {name}")
-            response = await task   
-            logger.debug(f"dictionary response {response}")
-
-
-async def solve(session, base_url: str, grid: str, name:str):
-    """ Solve the grid with the named dictionary 
-    """
-    url = (f"{base_url}/puzzle/solve/{grid}?dictionary_id={name}")
-    async with session.get(url) as response:
-        response_json = await response.json()
-        return response.status, response_json
-
-
-async def get_health(session, base_url: str):
-    """ Get health endpoint 
-    """
-    url = f"{base_url}/health"
-    async with session.get(url) as response:
-        response_json = await response.json()
-        return response.status, response_json
-
-
-async def dictionary_stat(session, base_url: str, name:str):
-    """ Get statistics for the dictionary 
-    """
-    url = f"{base_url}/dictionary/{name}"
-    async with session.get(url) as response:
-        response_json = await response.json()
-        return response.status, response_json
-
-async def dictionary_names(session, base_url: str):
-    """ Get the names of the dictionaries stored on the server    
-    """
-    url = f"{base_url}/dictionary"
-    async with session.get(url) as response:
-        response_json = await response.json()
-        return response.status, response_json
 
 async def main(base_url: str):
     # We use only one session
     async with aiohttp.ClientSession() as session:
         while True:
+            client = solver_client(session, base_url, MAX_WORD_LOAD)
+
             # Use health endpoint to get data
-            response = await get_health(session, base_url)
+            response = await client.get_health()
             logging.info(response)
 
-            response = await dictionary_names(session, base_url)
+            response = await client.dictionary_names()
             logger.info(response)             
 
             name = ""
@@ -128,17 +54,17 @@ async def main(base_url: str):
             if name.lower() == "quit":
                 break
 
-            response = await dictionary_stat(session, base_url, name)
+            response = await client.dictionary_stat(name)
             logger.info(response) 
             
             # hard coded value for number of words in dictionary file
             if response[0] != 200 or response[1]["num_of_words"] < 370103:
                 # create dictionary is idempotent
-                response = await create_dictionary(session, base_url, name)
+                response = await client.create_dictionary(name)
                 logger.info(response)
 
                 # build the dictionary async
-                build_dictionary_task = asyncio.create_task(build_dictionary(session, base_url, name))
+                build_dictionary_task = asyncio.create_task(client.build_dictionary("../test_data/words_alpha.txt", name))
 
             grid = await raw_input("Enter grid or (quit) - examples 'GLNTSRAWRPHSEOPS':")
             if grid.lower() == "quit":
@@ -147,7 +73,7 @@ async def main(base_url: str):
                 if grid == "":
                     grid = 'GLNTSRAWRPHSEOPS'
 
-                task = asyncio.create_task(solve(session, base_url, grid, name))
+                task = asyncio.create_task(client.solve(grid, name))
                 logger.debug(f"wait on solve task - {id(task)}")
                 response = await task  
                 logger.info(response)
