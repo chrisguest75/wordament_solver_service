@@ -13,6 +13,8 @@ handlers:
     stream: ext://sys.stdout
     formatter: json
 loggers:
+  werkzeug:
+    level: ERROR
   wordament.rest.puzzle:
     level: DEBUG
   wordament.rest.dictionary:
