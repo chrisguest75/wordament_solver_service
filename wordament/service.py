@@ -38,7 +38,7 @@ def str2bool(v):
 if __name__ == "__main__":
     print(f"Enter {__name__}")
     with io.open("./logging_config.yaml") as f:
-        logging_config = yaml.load(f)
+        logging_config = yaml.load(f, Loader=yaml.SafeLoader)
 
     logging.config.dictConfig(logging_config)
     logger = logging.getLogger()

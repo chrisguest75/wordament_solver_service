@@ -8,4 +8,7 @@ spec:
   - name: wordament
     image: test_wordament:latest
     imagePullPolicy: Never
+    env:
+      - name: PORT
+        value: "8000"
   
