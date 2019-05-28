@@ -18,8 +18,8 @@ import ptvsd
 import connexion
 from state_manager_factory import state_manager_factory, injector_factory
 
-app = connexion.FlaskApp(__name__, specification_dir='openapi/')
-app.add_api('service_api.yaml')
+from flask_request_intercepts import flask_intercepts
+
 injector_factory.configure(True)
 
 def log_uncaught_exceptions(exc_type, exc_value, exc_traceback):
@@ -77,6 +77,10 @@ if __name__ == "__main__":
     if server_port is None:
         logger.error(f"PORT environment variable not set")
         exit(1)
+
+    app = connexion.FlaskApp(__name__, specification_dir='openapi/')
+    app.add_api('service_api.yaml')
+    handlers = flask_intercepts(app)
 
     app.run(port=server_port, host='0.0.0.0')
 
