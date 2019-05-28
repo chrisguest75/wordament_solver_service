@@ -47,3 +47,17 @@ curl -X GET http://localhost:8000/api/dictionary/test --header "content-type:app
 ```
 gcloud builds submit --project open-source-01 --substitutions=COMMIT_SHA=test,BRANCH_NAME=master,REPO_NAME=wordament_solver_service
 ```
+
+# Development using skaffold
+I'm currently using this on Docker for Mac.
+
+* Enable kubernetes on Docker for Mac. 
+* Switch to the docker-for-desktop kubectl context 
+* Ensure skaffold v0.30.0 is installed. 
+
+NOTE: The "imagePullPolicy: Never" means we use the local image registry. 
+
+```
+cd ./wordament
+skaffold dev --profile=testlocaldockerk8s --no-prune
+```

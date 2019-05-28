@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: wordament
+  namespace: wordament
+spec:
+  containers:
+  - name: wordament
+    image: test_wordament:latest
+    imagePullPolicy: Never
+  
