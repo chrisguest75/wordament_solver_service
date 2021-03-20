@@ -9,7 +9,7 @@ if __name__ == "__main__":
     if 'SERVER_URL' in os.environ:
         base_url = os.environ['SERVER_URL']
 
-    with(io.open("../test_data/words_alpha.txt")) as f:
+    with(io.open("./test_data/words_alpha.txt")) as f:
         lines = [line.rstrip() for line in f]
 
     total_word_count = len(lines)
