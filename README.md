@@ -14,6 +14,11 @@ The words alpha has been sourced from [words_alpha.txt](https://github.com/dwyl/
 * Does it make sense to pass wordlist as array rather than {[]}
 * Deploy to endpoints and kubernetes
 
+# API FIXES
+* Return a json document for word exists
+* Check lower and uppercase sensitivity
+* Get coords for words
+
 # Usage
 To host you can use the docker-compose file. 
 

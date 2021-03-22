@@ -185,6 +185,9 @@ def test_word_existence(client):
 
     response = client.get('/api/dictionary/test/fifteen', headers={'content-type': 'application/json'})
     assert response.status_code == 200
+    assert response.json["dictionary_id"] == "test"
+    assert response.json["word"] == "fifteen"
+    assert response.json["exists"] == True
 
     response = client.get('/api/dictionary/test/sixteen', headers={'content-type': 'application/json'})
     assert response.status_code == 404
