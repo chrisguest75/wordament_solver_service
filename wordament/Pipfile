@@ -17,4 +17,4 @@ py-wordament-helper = {git = "https://github.com/chrisguest75/py-wordament-helpe
 flask-injector = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.9"
