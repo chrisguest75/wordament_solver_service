@@ -18,6 +18,13 @@ The words alpha has been sourced from [words_alpha.txt](https://github.com/dwyl/
 * Return a json document for word exists
 * Check lower and uppercase sensitivity
 * Get coords for words
+* Board game generator 
+
+# HTML Fixes
+* Selection issues on diagonals
+* Error handling 
+* Timer
+* Percentage of words found
 
 # Usage
 To host you can use the docker-compose file. 
