@@ -17,24 +17,44 @@ The words alpha has been sourced from [words_alpha.txt](https://github.com/dwyl/
 # Usage
 To host you can use the docker-compose file. 
 
-```
+```sh
 docker-compose up --build
 ```
 
-Browse to http://localhost:8000/api/ui
+```sh
+# Browse to api
+open http://localhost:8000/api/ui
+xdg-open http://localhost:8000/api/ui
+```
+
+# Local development
+Building the code locally 
+
+```sh
+# Build the server
+cd ./wordament
+export PIPENV_VENV_IN_PROJECT=1     
+pipenv install --three
+
+# Build the client
+cd ./simple_client
+export PIPENV_VENV_IN_PROJECT=1     
+pipenv install --three
+```
+
 
 # Debugging and Unittests
-You can use VSCode to load and execute the tests. Use 'pipenv install --dev'
+You can use VSCode to load and execute the tests. Use `pipenv install --dev`
 
 # Code Coverage
-```
+```sh
 pytest --cov=. --cov-report html:coverage
 open ./coverage/index.html 
 ```
 
 # Testing 
 You can use curl commands.  Or there is a file in the wordament [./wordament/quick_endpoint_tests.sh](./wordament/quick_endpoint_tests.sh)
-```
+```sh
 curl http://localhost:8000/api/health
 curl http://localhost:8000/api/wordament
 
@@ -45,7 +65,7 @@ curl -X GET http://localhost:8000/api/dictionary/test --header "content-type:app
 ```
 
 # Test CloudBuild
-```
+```sh
 gcloud builds submit --project open-source-01 --substitutions=COMMIT_SHA=test,BRANCH_NAME=master,REPO_NAME=wordament_solver_service
 ```
 
@@ -58,7 +78,7 @@ I'm currently using this on Docker for Mac.
 
 NOTE: The "imagePullPolicy: Never" means we use the local image registry. 
 
-```
+```sh
 cd ./wordament
 skaffold dev --profile=testlocaldockerk8s --no-prune
 ```
@@ -66,7 +86,7 @@ skaffold dev --profile=testlocaldockerk8s --no-prune
 # Debugging using skaffold and VSCode
 If you want to live debug the service from VSCode you can run Skaffold with port-forwarding.
 
-```
+```sh
 cd ./wordament
 skaffold dev --profile=testlocaldockerk8s --no-prune --port-forward
 ```
@@ -74,7 +94,7 @@ skaffold dev --profile=testlocaldockerk8s --no-prune --port-forward
 You'll need to change the manifests in ./k8s to ensure the DEBUGGER is enabled.  
 If you'd like to wait for the debugger to attach then also set WAIT to True. 
 
-```
+```yaml
     env:
       - name: DEBUGGER
         value: "True"
@@ -83,7 +103,7 @@ If you'd like to wait for the debugger to attach then also set WAIT to True.
 ```
 
 Your .vscode config should look something like this. 
-```
+```json
         {
             "name": "Python: Remote Attach",
             "type": "python",
