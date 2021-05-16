@@ -2,14 +2,25 @@
 import io 
 import requests
 import os
+import argparse
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Redis dataload example')
+    parser.add_argument('--url', default="0.0.0.0:8080/api", dest='url', type=str, help='')
+    parser.add_argument('--words', default="./test_data/words_alpha.txt", dest='words', type=str, help='')
 
-    base_url = "http://localhost:8000/api"
+    parser.add_argument('--load-only', dest='loadonly', action='store_true')
+
+    args = parser.parse_args()
+        
+    base_url = args.url 
     if 'SERVER_URL' in os.environ:
         base_url = os.environ['SERVER_URL']
+    words_file = args.words         
+    if 'WORDS_FILE' in os.environ:
+        words_file = os.environ['WORDS_FILE']
 
-    with(io.open("./test_data/words_alpha.txt")) as f:
+    with(io.open(words_file)) as f:
         lines = [line.rstrip() for line in f]
 
     total_word_count = len(lines)
@@ -41,14 +52,17 @@ if __name__ == "__main__":
         response = requests.get(f"{base_url}/dictionary/full")
         print("loaded words: " + str(response.json()["num_of_words"]))
 
+    ############################################################
+    # load
+    ############################################################
+    if args.loadonly == False:        
+        grid = input("Enter grid:")
+        #grid = 'GLNTSRAWRPHSEOPS'
+        response = requests.get(f"{base_url}/puzzle/solve/{grid}?dictionary_id=full")
+        discovered_words = response.json()
+        words = list(discovered_words["words"])
+        words.sort(key=len, reverse=True)
 
-    grid = input("Enter grid:")
-    #grid = 'GLNTSRAWRPHSEOPS'
-    response = requests.get(f"{base_url}/puzzle/solve/{grid}?dictionary_id=full")
-    discovered_words = response.json()
-    words = list(discovered_words["words"])
-    words.sort(key=len, reverse=True)
-
-    for word in words: 
-        print(word) 
+        for word in words: 
+            print(word) 
 

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/9bcbdf686a.js" crossorigin="anonymous"></script>
+
+    <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous"> -->
+    <style type="text/css">
+      html, body {
+          min-height: 100%;
+      }
+      body {
+          background: linear-gradient(#93a594e9, #929aa25f)  no-repeat;
+      }
+      div.tile {
+        background-color: rgb(226, 245, 226);
+        text-align: center;
+        user-select: none;
+      }
+      div.tile:hover {
+        background-color: yellow;
+      }
+      div.selectedtile {
+        text-align: center;
+        user-select: none;
+        background-color: rgb(253, 191, 110);
+      }           
+      /* div.tile:active {
+        background-color: blue;
+      } */
+
+      </style>
+      <script type="text/javascript">
+        let GRID="****************";
+
+        function randomCharacter() {
+          var result           = '';
+          var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+          var charactersLength = characters.length;
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+          return result;
+        }      
+
+        function unselect() {
+          for(var y = 0; y <= 3; y++) {
+            for(var x = 0; x <= 3; x++) {
+              d3.select("#tile" + y + "_" + x).classed("tile", true);
+              d3.select("#tile" + y + "_" + x).classed("selectedtile", false);
+            } 
+          }
+        }
+
+        function generate() {
+          GRID = "";
+          d3.select("#wordlist").html("");
+          for(var y = 0; y <= 3; y++) {
+            for(var x = 0; x <= 3; x++) {
+              var c = randomCharacter();
+              d3.select("#tile" + y + "_" + x + "_letter").text(c);
+              GRID += c;
+            } 
+          }
+          unselect();
+          addWord("[start] " + GRID);
+        }
+
+        function solve() {
+          d3.json('http://0.0.0.0:8080/api/puzzle/solve/' + GRID + "?dictionary_id=full")
+            .then(function(data) {
+              data.words.forEach(function(entry) {
+                addWord(entry);
+              })
+            });         
+        }
+
+        function addWord(word) {
+          d3.select("#wordlist").append("li").attr("class", "list-group-item").text(word);
+        }
+
+        var mouseclickstate = false;
+        var currenttile_x = -1, currenttile_y = -1;
+        var word = [];
+
+        function mouseover(event) {
+          if (mouseclickstate == true) {
+
+            var id=event.id;
+            var xy = id.replace("tile", "").split("_");
+            var x = xy[0];
+            var y = xy[1];
+
+
+
+            var div = d3.select(event);
+            if (div.classed("selectedtile") == false) {
+              word += event.innerText;
+              div.classed("selectedtile", true);
+              div.classed("tile", false);
+            }
+            //addWord("OVER:" + event.innerText);    
+          }
+        }
+
+        function mousedown(event) {
+          //addWord("DOWN:" + event.innerText);    
+          var div = d3.select(event);
+          div.classed("selectedtile", true);
+          div.classed("tile", false);
+
+          word = event.innerText;
+          mouseclickstate = true;
+          var id=event.id;
+          var xy = id.replace("tile", "").split("_");
+          currenttile_x = xy[0];
+          currenttile_y = xy[1];
+        }       
+
+        function mouseup(event) {
+          d3.json('http://0.0.0.0:8080/api/dictionary/full/' + word)
+            .then(function(data) {
+                addWord("WORD EXISTS:" + word); 
+            });  
+
+          mouseclickstate = false;   
+          currenttile_x = -1;
+          currenttile_y = -1;
+          unselect();
+        }
+    </script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>      
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light static-top mb-5 shadow">
+  <div class="container">
+    <a class="navbar-brand" href="#">Wordament</a>
+    <span>
+      <button type="button" style="opacity: 0.8;" onclick="javascript:generate();" class="btn btn-primary" >Generate</button>
+      <button type="button" style="opacity: 0.8;" onclick="javascript:solve();" class="btn btn-primary" >Solve</button>
+    </span>
+  </div>
+</nav>
+
+<!-- Page Content -->
+<div class="container">
+  <div class="card border-0 shadow my-5">
+    <div class="container">
+      <div class="row">
+        <div id="tile0_0" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile0_0_letter" class="p-0 m-0 display-1">*</h1></div>
+        <div id="tile0_1" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile0_1_letter" class="p-0 m-0 display-1">*</h1></div>
+        <div id="tile0_2" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile0_2_letter" class="p-0 m-0 display-1">*</h1></div>
+        <div id="tile0_3" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile0_3_letter" class="p-0 m-0 display-1">*</h1></div>
+      </div>
+      <div class="row">
+        <div id="tile1_0" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile1_0_letter" class="p-0 m-0 display-1">*</h1></div>
+        <div id="tile1_1" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile1_1_letter" class="p-0 m-0 display-1">*</h1></div>
+        <div id="tile1_2" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile1_2_letter" class="p-0 m-0 display-1">*</h1></div>
+        <div id="tile1_3" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile1_3_letter" class="p-0 m-0 display-1">*</h1></div>
+      </div>
+      <div class="row">
+        <div id="tile2_0" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile2_0_letter" class="p-0 m-0 display-1">*</h1></div>
+        <div id="tile2_1" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile2_1_letter" class="p-0 m-0 display-1">*</h1></div>
+        <div id="tile2_2" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile2_2_letter" class="p-0 m-0 display-1">*</h1></div>
+        <div id="tile2_3" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile2_3_letter" class="p-0 m-0 display-1">*</h1></div>
+      </div>
+      <div class="row">
+        <div id="tile3_0" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile3_0_letter" class="p-0 m-0 display-1">*</h1></div>
+        <div id="tile3_1" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile3_1_letter" class="p-0 m-0 display-1">*</h1></div>
+        <div id="tile3_2" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile3_2_letter" class="p-0 m-0 display-1">*</h1></div>
+        <div id="tile3_3" onmouseover="javascript:mouseover(this);" onmouseup="javascript:mouseup(this);" onmousedown="javascript:mousedown(this);" class="tile p-0 m-0 col border border-dark"><h1 id="tile3_3_letter" class="p-0 m-0 display-1">*</h1></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow my-5">
+    <ul id="wordlist" class="list-group">
+    </ul>
+  </div>
+
+</div>
+
+
+</body>
+

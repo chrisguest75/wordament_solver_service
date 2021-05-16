@@ -1,0 +1,11 @@
+version: "3.7"
+services:
+  client:
+    build: ./
+    environment:
+      SERVER_URL: "http://backend:8000/api"
+
+networks:
+  default:
+    name: wordament_solver_service_wordament-net
+    external: true

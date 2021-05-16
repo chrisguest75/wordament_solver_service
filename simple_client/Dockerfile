@@ -26,4 +26,4 @@ ENV WAIT=False
 
 USER appuser
 EXPOSE 8080
-CMD ["python3", "-u", "./main.py"]
+CMD ["python3", "-u", "./main.py", "--load-only"]

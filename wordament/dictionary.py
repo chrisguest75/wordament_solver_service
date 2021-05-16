@@ -87,8 +87,14 @@ def get_word(dictionary_id, word):
     else:
         dictionaries = sm.get("dictionaries")
         trie = dictionaries[dictionary_id]
-         
-    return NoContent, 200 if trie.is_word(word) else 404
+
+    document = {
+        "dictionary_id": dictionary_id,
+        "word": word,
+        "exists": True
+    }
+  
+    return document, 200 if trie.is_word(word) else 404
 
 def add_word(dictionary_id, word):
     logger.info("enter add_word", extra={"method": "add_word", "parameters": {"dictionary_id": dictionary_id, "word": word}})
