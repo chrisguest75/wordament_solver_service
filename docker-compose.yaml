@@ -23,5 +23,5 @@ services:
   #   environment:
   #     SERVER_URL: "http://0.0.0.0:8000/api"
   #   depends_on:
-  #     - "wordament"
+  #     - "backend"
 

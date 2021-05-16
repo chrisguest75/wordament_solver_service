@@ -30,12 +30,30 @@ The words alpha has been sourced from [words_alpha.txt](https://github.com/dwyl/
 To host you can use the docker-compose file. 
 
 ```sh
+# start the servers
 docker-compose up --build
 ```
 
 ```sh
-# Browse to api
+# Build the client to load the data
+pushd ./simple_client
+export PIPENV_VENV_IN_PROJECT=1     
+pipenv install --three
+popd
+./load.sh
+```
+
+```sh
+# Browse to Ui
+open http://localhost:8080/
+# debian
+xdg-open http://localhost:8080/
+```
+
+```sh
+# Browse to swagger api 
 open http://localhost:8000/api/ui
+# debian
 xdg-open http://localhost:8000/api/ui
 ```
 
