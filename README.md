@@ -32,29 +32,26 @@ To host you can use the docker-compose file.
 ```sh
 # start the servers
 docker-compose up --build
+
+# load the dictionary
+cd ./simple_client
+docker-compose up --build
+popd
 ```
 
-```sh
-# Build the client to load the data
-pushd ./simple_client
-export PIPENV_VENV_IN_PROJECT=1     
-pipenv install --three
-popd
-./load.sh
-```
 
 ```sh
 # Browse to Ui
-open http://localhost:8080/
+open http://0.0.0.0:8080/
 # debian
-xdg-open http://localhost:8080/
+xdg-open http://0.0.0.0:8080/
 ```
 
 ```sh
 # Browse to swagger api 
-open http://localhost:8000/api/ui
+open http://0.0.0.0:8000/api/ui
 # debian
-xdg-open http://localhost:8000/api/ui
+xdg-open http://0.0.0.0:8000/api/ui
 ```
 
 # Local development
@@ -66,12 +63,14 @@ cd ./wordament
 export PIPENV_VENV_IN_PROJECT=1     
 pipenv install --three
 
-# Build the client
+# Build the client to load the data
 cd ./simple_client
 export PIPENV_VENV_IN_PROJECT=1     
 pipenv install --three
-```
+popd
+./load.sh
 
+```
 
 # Debugging and Unittests
 You can use VSCode to load and execute the tests. Use `pipenv install --dev`
@@ -85,12 +84,12 @@ open ./coverage/index.html
 # Testing 
 You can use curl commands.  Or there is a file in the wordament [./wordament/quick_endpoint_tests.sh](./wordament/quick_endpoint_tests.sh)
 ```sh
-curl http://localhost:8000/api/health
-curl http://localhost:8000/api/wordament
+curl http://0.0.0.0:8000/api/health
+curl http://0.0.0.0:8000/api/wordament
 
-curl -X POST http://localhost:8000/api/dictionary/test -d '[]' --header "content-type:application/json"
+curl -X POST http://0.0.0.0:8000/api/dictionary/test -d '[]' --header "content-type:application/json"
 
-curl -X GET http://localhost:8000/api/dictionary/test --header "content-type:application/json"
+curl -X GET http://0.0.0.0:8000/api/dictionary/test --header "content-type:application/json"
 
 ```
 

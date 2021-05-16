@@ -64,7 +64,7 @@
         }
 
         function solve() {
-          d3.json('http://localhost:8080/api/puzzle/solve/' + GRID + "?dictionary_id=full")
+          d3.json('http://0.0.0.0:8080/api/puzzle/solve/' + GRID + "?dictionary_id=full")
             .then(function(data) {
               data.words.forEach(function(entry) {
                 addWord(entry);
@@ -115,7 +115,7 @@
         }       
 
         function mouseup(event) {
-          d3.json('http://localhost:8080/api/dictionary/full/' + word)
+          d3.json('http://0.0.0.0:8080/api/dictionary/full/' + word)
             .then(function(data) {
                 addWord("WORD EXISTS:" + word); 
             });  
